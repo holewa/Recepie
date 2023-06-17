@@ -1,0 +1,26 @@
+.navbar-custom {
+  background-color: red; /* Replace with your desired color */
+}
+
+.active {
+  color: red;
+}
+
+.navbar-color {
+  background-color: #e3f2fd;
+  color: white;
+}
+
+.active-link {
+  font-weight: bold;
+}
+
+html {
+  height: 1000px;
+}
+
+.pointerer {
+  cursor: pointer;
+}
+
+

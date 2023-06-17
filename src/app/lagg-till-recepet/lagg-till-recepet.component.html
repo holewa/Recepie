@@ -1,0 +1,65 @@
+<!--Inputfält för att söka efter bilder-->
+<div [hidden]="knappKlickad && bilderHittade" class="input-container">
+  <form class="form-inline" (ngSubmit)=fetchListOfPictures()>
+    <input class="form-control mr-sm-2 input-field" type="search" placeholder="Vad ska du laga?"
+           [(ngModel)]="searchWord"
+           name="searchWord">
+  </form>
+</div>
+
+<!--Om sökningen lyckades och bilder har returnerats-->
+<div *ngIf="!laddar && bilderHittade && !klickatPaBild">
+  <h2 style="text-align: center">Välj en inspirerande bild..</h2>
+  <div class="picture-container">
+    <div class="pagination-arrow left-arrow pil" (click)="goToPage(currentPage - 1)" [hidden]="currentPage === 1">
+      <i class="bi bi-arrow-left fs-4"></i>
+    </div>
+    <div *ngFor="let picture of paginatedPictures" class="picture-card" (click)="selectPicture(picture)">
+      <div class="picture-wrapper">
+        <img [src]="picture.urls.small" alt="Picture" class="picture">
+      </div>
+    </div>
+    <div class="pagination-arrow right-arrow pil" (click)="goToPage(currentPage + 1)"
+         [hidden]="currentPage === totalPages.length">
+      <i class="bi bi-arrow-right fs-4"></i>
+    </div>
+  </div>
+</div>
+
+<!--Inputfält för att lägga till ingridienser-->
+<div *ngIf="klickatPaBild" class="background-container">
+  <img [src]="selectedPicture.urls.regular"/>
+  <div id="ingridienser1">
+    <form class="form-inline" (ngSubmit)=laggTillIngridiens(ingridiens)>
+      <input class="form-control mr-sm-2 input-field" type="search" placeholder="{{placeholder}}"
+             [(ngModel)]="ingridiens"
+             name="ingridient">
+      <div class="d-flex justify-content-center">
+        <button type="submit">Lägg till</button>
+        <button (click)="markeraIngridienslistaSomKlar()">Klar</button>
+        <button (click)="rensa()">Rensa</button>
+      </div>
+    </form>
+  </div>
+
+  <!--  Tillagda ingridienser-->
+  <div *ngIf="ingridiensLista.length > 0" id="ingridienser2">
+    <h2>Ingridienser</h2>
+    <ul *ngFor="let ingridient of ingridiensLista; index as i">
+      <li>{{ingridient}}
+        <span class="remove-icon" (click)="ingridiensLista.splice(i, 1)">
+    <i class="bi bi-trash fs-4"></i>
+        </span></li>
+    </ul>
+  </div>
+</div>
+
+
+<!--Laddar-->
+<div *ngIf="knappKlickad && laddar">Laddar...</div>
+
+<!--När en sökning har gjorts men inga bilder returnerades-->
+<div *ngIf="!laddar && knappKlickad && !bilderHittade">
+  <h3>Hittade inga bilder för din sökning, vill du fortsätta att skapa ett recept utan bild?</h3>
+</div>
+

@@ -1,14 +1,15 @@
-import {Component, OnInit} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import {PhotoResponse} from './photo-response';
+import { Component } from '@angular/core';
+import {PhotoResponse} from '../photo-response';
+import {HttpClient} from '@angular/common/http';
+import {Photo} from '../photo';
 import {Router} from '@angular/router';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: 'app-lagg-till-recepet',
+  templateUrl: './lagg-till-recepet.component.html',
+  styleUrls: ['./lagg-till-recepet.component.css']
 })
-export class AppComponent implements OnInit{
+export class LaggTillRecepetComponent {
   title = 'recepie';
   pictures: PhotoResponse;
   laddar = true;
@@ -17,9 +18,15 @@ export class AppComponent implements OnInit{
   apiAccesKey = '&client_id=s6j_dQynLXMKyfwT4jbrDTcHoUxVuKvQRFRsUQHlWqQ'
   currentPage = 1;
   pageSize = 4; // Number of pictures to display per page
-  lankAktiv: string;
+  bilderHittade: boolean;
+  selectedPicture: Photo;
+  klickatPaBild: boolean;
+  ingridiens: string;
+  ingridiensLista: string[] = [];
+  placeholder: string = 'lägg till en ingridiens';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private route: Router) {
+  }
 
   ngOnInit() {
   }
@@ -31,6 +38,7 @@ export class AppComponent implements OnInit{
       this.http.get('https://api.unsplash.com/search/photos/?query=' + this.searchWord + this.apiAccesKey)
         .subscribe((response: any) => {
           this.pictures = response
+          this.bilderHittade = this.pictures.results.length > 0;
           this.laddar = false;
         });
     } catch (error) {
@@ -56,7 +64,26 @@ export class AppComponent implements OnInit{
     }
   }
 
-  clicked(aktivLank: string) {
-    this.lankAktiv = aktivLank;
+  selectPicture(selectedPicture: Photo) {
+    this.selectedPicture = selectedPicture;
+    this.klickatPaBild = true;
+    // this.route.navigate(['/laggtillingridienser'])
+    //pagineringen?
+  }
+
+  laggTillIngridiens(ingridiens: string): void {
+    this.ingridiens = '';
+    if (ingridiens !== '') {
+      this.ingridiensLista.push(ingridiens);
+    }
+  }
+
+  markeraIngridienslistaSomKlar(): void {
+    this.placeholder = 'Lägg till stegen'
+
+  }
+
+  rensa():void {
+    this.ingridiensLista = [];
   }
 }
